@@ -24,8 +24,9 @@ const player2 = {
 
 function createPlayer(player, name, hp){
     const $player = document.createElement('div');
-    $player.classList.add('player1');
-
+    $player.classList.add('player1');                        // Немного не понял как сделать так, чтобы создавалось два разных класса из одной строки.
+                                                             // Тоесть как передать объект player2 так, чтобы для него создался класс (есть подозрения, что нужно имя входящего объекта преобразовать через toString,
+                                                             // но в js я не знаю как это реализовать)
         const $progressbar = document.createElement('div')
         $progressbar.classList.add('progressbar');
 
@@ -45,7 +46,7 @@ function createPlayer(player, name, hp){
             const $img = document.createElement('img')
             $img.src = player.img;
 
-    const $root = document.querySelector('.root');
+    const $root = document.querySelector('.arenas');
     $root.appendChild($player);
         $player.appendChild($progressbar);
             $progressbar.appendChild($life);
@@ -56,5 +57,5 @@ function createPlayer(player, name, hp){
             $character.appendChild($img);
 };
 
-createPlayer(player1,'Scorpion', 100);
-createPlayer(player2,'Sonya', 100);
+createPlayer(player1, player1.name, 100);
+createPlayer(player2, player2.name, 100);
