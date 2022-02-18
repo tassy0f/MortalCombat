@@ -11,7 +11,10 @@ const player1 = {
 
     function(name) {
         console.log(name + ' Fight...');
-    }
+    },
+    changeHP: changeHP,
+    elHp: elHp,
+    renderHp: renderHp
 };
 
 const player2 = {
@@ -24,8 +27,29 @@ const player2 = {
 
     function(name) {
         console.log(name + ' Fight...');
-    }
+    },
+    changeHP: changeHP,
+    elHp: elHp,
+    renderHp: renderHp
 };
+
+function changeHP(damage) {
+    this.elHp;
+    this.hp -= damage;
+    if (this.hp <= 0) {
+        this.hp = 0;
+    }
+    this.renderHp;  
+}
+
+function elHp () {
+    const $playerLife = document.querySelector('.player' + this.playerNumber +' .life');
+    return $playerLife;
+}
+
+function renderHp () {
+    return this.elHp().style.width = this.hp + '%';
+}
 
 function createElement (tag, className) {
     const $tag = document.createElement(tag);
@@ -37,55 +61,67 @@ function createElement (tag, className) {
 
 function createPlayer(obj){
     const $player = createElement('div', 'player' + obj.playerNumber);                        
+    const $progressbar = createElement('div', 'progressbar');
+    const $life = createElement('div', 'life');
+    $life.style.width = obj.hp + '%';
+    const $name = createElement('div', 'name');
+    $name.innerText = obj.name;
+    const $character = createElement('div', 'character');
+    const $img = createElement('img');
+    $img.src = obj.img;
+    $player.appendChild($progressbar);
+    $progressbar.appendChild($life);
+    $progressbar.appendChild($name);
+    $player.appendChild($character);
+    $character.appendChild($img);
 
-        const $progressbar = createElement('div', 'progressbar');
-
-            const $life = createElement('div', 'life');
-                $life.style.width = obj.hp + '%';
-
-            const $name = createElement('div', 'name');
-            $name.innerText = obj.name;
-
-        const $character = createElement('div', 'character');
-
-            const $img = createElement('img');
-            $img.src = obj.img;
-
-        $player.appendChild($progressbar);
-            $progressbar.appendChild($life);
-            $progressbar.appendChild($name);
-        $player.appendChild($character);
-            $character.appendChild($img);
-
-            return $player;
+    return $player;
 }
 
-function changeHP(player) {
-    const $playerLife = document.querySelector('.player' + player.playerNumber +' .life');
-    const $randomDamage = Math.ceil(Math.random() * 20);
+function randomInt(int) {
+    return Math.ceil(Math.random() * int);
+}
 
-    
-    if (player.hp <= 0) {
-        player.hp = 0;
-        $playerLife.style.width = player.hp + '%';
-        $randomButton.disabled = true
-        $root.appendChild(playerWin(player.name))  // не смог понять как создать правильно надпись победителя
-    } else {
-        console.log(player.hp -= $randomDamage);
-        $playerLife.style.width = player.hp +'%';
-        
-    }
+function createReloadButton() {
+    const $reloadButtonDiv = createElement('div', 'reloadWrap');
+    const $reloadButton = createElement('button', 'button');
+    $reloadButton.innerText = 'Restart';
+    $root.appendChild($reloadButtonDiv);
+    $reloadButtonDiv.appendChild($reloadButton);
+    $reloadButton.addEventListener('click', function() {
+        window.location.reload();
+    })
 }
 
 $randomButton.addEventListener('click', function() {
-    changeHP(player1);
-    changeHP(player2);
+    player1.changeHP(randomInt(20));
+    player2.changeHP(randomInt(20));
+    player1.renderHp();
+    player2.renderHp();
+
+    
+
+    if (player1.hp === 0 || player2.hp === 0){
+        $randomButton.disabled = true;
+        createReloadButton();
+    }
+    
+    if (player1.hp === 0 && player1.hp < player2.hp) {
+        $root.appendChild(playerWin(player2.name))
+    } else if (player2.hp === 0 && player2.hp < player1.hp) {
+        $root.appendChild(playerWin(player1.name))
+    } else if (player2.hp === 0 && player1.hp === 0) {
+        $root.appendChild(playerWin())
+    }
 })
 
 function playerWin(name) {
     const $winTitle = createElement('div', 'loseTitle');
-    $winTitle.innerText = name + ' dont Wins!!!';
-
+    if (name) {
+        $winTitle.innerText = name + ' Wins!!!';
+    } else {
+        $winTitle.innerText = 'draw!!!';
+    }
     return $winTitle;
 }
 
