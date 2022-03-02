@@ -12,9 +12,9 @@ const player1 = {
     function(name) {
         console.log(name + ' Fight...');
     },
-    changeHP: changeHP,
-    elHp: elHp,
-    renderHp: renderHp
+    changeHP,
+    elHp,
+    renderHp,
 };
 
 const player2 = {
@@ -28,10 +28,29 @@ const player2 = {
     function(name) {
         console.log(name + ' Fight...');
     },
-    changeHP: changeHP,
-    elHp: elHp,
-    renderHp: renderHp
+    changeHP,
+    elHp,
+    renderHp,
+    
 };
+
+const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20,
+}
+const ATTACK = ['head', 'body', 'foot'];
+
+function enemyAttack() {
+    const hit = ATTACK[randomInt(3) - 1];
+    const defence = ATTACK[randomInt(3) - 1];
+    
+    return {
+        value: randomInt(HIT[hit]),
+        hit,
+        defence,
+    }
+}
 
 function changeHP(damage) {
     this.elHp;
@@ -93,9 +112,41 @@ function createReloadButton() {
     })
 }
 
-$randomButton.addEventListener('click', function() {
-    player1.changeHP(randomInt(20));
-    player2.changeHP(randomInt(20));
+function playerWin(name) {
+    const $winTitle = createElement('div', 'loseTitle');
+    if (name) {
+        $winTitle.innerText = name + ' Wins!!!';
+    } else {
+        $winTitle.innerText = 'draw!!!';
+    }
+    return $winTitle;
+}
+
+const $fightForm = document.querySelector('.control');
+
+$fightForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const enemy = enemyAttack();
+
+    const attack = {};
+
+    for (const item of $fightForm) {
+        if (item.checked && item.name === 'hit') {
+            attack.value = randomInt(HIT[item.value]);
+            attack.hit = item.value;
+        }
+        if (item.checked && item.name === 'defence') {
+            attack.defence = item.value;
+        }
+
+        item.checked = false;
+    }
+
+    console.log('###: a', attack);
+    console.log('###: e', enemy);
+
+    player1.changeHP(enemy.value);
+    player2.changeHP(attack.value);
     player1.renderHp();
     player2.renderHp();
 
@@ -113,17 +164,8 @@ $randomButton.addEventListener('click', function() {
     } else if (player2.hp === 0 && player1.hp === 0) {
         $root.appendChild(playerWin())
     }
-})
 
-function playerWin(name) {
-    const $winTitle = createElement('div', 'loseTitle');
-    if (name) {
-        $winTitle.innerText = name + ' Wins!!!';
-    } else {
-        $winTitle.innerText = 'draw!!!';
-    }
-    return $winTitle;
-}
+})
 
 $root.appendChild(createPlayer(player1));
 $root.appendChild(createPlayer(player2));
