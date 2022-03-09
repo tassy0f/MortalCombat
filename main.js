@@ -62,7 +62,7 @@ const player1 = {
     },
     changeHP,
     elHp,
-    renderHp,
+    renderHp
 };
 
 const player2 = {
@@ -78,8 +78,7 @@ const player2 = {
     },
     changeHP,
     elHp,
-    renderHp,
-    
+    renderHp
 };
 
 function enemyAttack() {
@@ -139,7 +138,7 @@ function createPlayer(obj){
 }
 
 function randomInt(int) {
-    return Math.floor(Math.random() * int);
+    return Math.ceil(Math.random() * int);
 }
 
 function createReloadButton() {
@@ -192,48 +191,42 @@ function getTime() {
     return doneDate;
 }
 
-function generateLogs(type, player1, player2) {
-    const text = type.includes('start','draw') ? logs[type] : logs[type][randomInt(18)];
+const generateLogs = (type, player1, player2, damage = 0) => {
+    const text = type.includes('start','draw') ? logs[type] : logs[type][randomInt(logs[type].length - 1)]
+    
+    console.log(text);
 
     const confirmedTime = getTime();
     let logMessage = '';
 
     switch (type) {
         case 'start':
-            logMessage = text
+            logMessage = `${text}`
             .replace('[time]', confirmedTime)
             .replace('[player1]', player1.name)
             .replace('[player2]', player2.name);
             break;
-        case 'hit':
-            logMessage = `${confirmedTime} - ${text} [${player2.hp}/100]`
-            .replace('[playerKick]', player1.name)
-            .replace('[playerDefence]', player2.name);
-            break;
-        case 'defence':
-            logMessage = `${confirmedTime} - ${text} [${player1.hp}/100]`
-            .replace('[playerKick]', player2.name)
-            .replace('[playerDefence]', player1.name);
-            break;
         case 'end':
             logMessage = `${confirmedTime} - ${text}`
             .replace('[playerWins]', player1.name)
-            .replace('[plauerLose]', player2.name);
+            .replace('[playerLose]', player2.name);
+        case 'hit':
+            logMessage = `${confirmedTime} - ${text} -${damage} [${player2.hp}/100]`
+            .replace('[playerKick]', player1.name)
+            .replace('[playerDefence]', player2.name)
+            .replace('[playerWins]', player1.name)
+            .replace('[playerLose]', player2.name);
+            break;
+        case 'defence':
+            logMessage = `${confirmedTime} - ${text}`
+            .replace('[playerDefence]', player1.name)
+            .replace('[playerKick]', player2.name);
+            break;
         default:
-            logMessage = text;
+            logMessage = `${text}`;
     }
 
-
-
     $chatLog.insertAdjacentHTML('afterbegin', `<p>${logMessage}<p>`);
-
-
-
-
-
-    // const text = logs[type].replace('[playerKick]', player1.name).replace('[playerDefence]', player2.name);
-    // console.log(text);
-    // const el = `<p>${text}<p>`;
 }
 
 $fightForm.addEventListener('submit', function(e) {
@@ -241,16 +234,27 @@ $fightForm.addEventListener('submit', function(e) {
     const enemy = enemyAttack();
     const player = playerAttack();
 
-    if (player.defence !== enemy.hit) {
-        player1.changeHP(enemy.value);
+    let damagePlayer1 = 0;
+    let damagePlayer2 = 0;
+
+    if (enemy.hit === player.defence) {
+        generateLogs('defence', player2, player1, damagePlayer1);
+    } else {
+        damagePlayer1 = enemy.value;
+        player1.changeHP(damagePlayer1);
         player1.renderHp();
-        generateLogs('hit', player2, player1);
+
+        generateLogs('hit', player2, player1, damagePlayer1);
     }
 
-    if (enemy.defence !== player.hit) {
-        player2.changeHP(player.value);
+    if (player.hit === enemy.defence) {
+        generateLogs('defence', player1, player2, damagePlayer2);
+    } else {
+        damagePlayer2 = player.value;
+        player2.changeHP(damagePlayer2);
         player2.renderHp();
-        generateLogs('hit', player1, player2);
+
+        generateLogs('hit', player1, player2, damagePlayer2);
     }
     
     showResult();
@@ -263,17 +267,17 @@ function showResult() {
     }
     
     if (player1.hp === 0 && player1.hp < player2.hp) {
-        $root.appendChild(playerWin(player2.name))
+        $root.appendChild(playerWin(player2.name));
         generateLogs('end', player2, player1);
     } else if (player2.hp === 0 && player2.hp < player1.hp) {
-        $root.appendChild(playerWin(player1.name))
+        $root.appendChild(playerWin(player1.name));
         generateLogs('end', player1, player2);
     } else if (player2.hp === 0 && player1.hp === 0) {
-        $root.appendChild(playerWin())
+        $root.appendChild(playerWin());
         generateLogs('draw');
     }
 }
 
 $root.appendChild(createPlayer(player1));
 $root.appendChild(createPlayer(player2));
-generateLogs('start', player1, player2);
+generateLogs('start', player2, player1);
