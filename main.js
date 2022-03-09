@@ -187,12 +187,8 @@ function getTime() {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
-    // console.log(hours);
-    // console.log(minutes);
-    // console.log(seconds);
 
     const doneDate = `${dateWrapGenerate(hours)}:${dateWrapGenerate(minutes)}:${dateWrapGenerate(seconds)}`;
-    console.log(doneDate);
     return doneDate;
 }
 
