@@ -1,4 +1,4 @@
-import{$chatLog} from "./main.js";
+import{$chatLog} from "./game.js";
 import {randomInt} from "./supportFunction.js";
 
 const logs = {
