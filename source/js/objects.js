@@ -61,22 +61,6 @@ class Player {
     }
 }
 
-const player1 = new Player({
-    name : 'Kitana',
-    hp : 100,
-    img : 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
-    playerNumber : 1,
-    rootSelector: 'arenas'
-});
-
-const player2 = new Player({
-    name : 'Scorpion',
-    hp : 100,
-    img : 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-    playerNumber : 2,
-    rootSelector: 'arenas'
-});
-
 function enemyAttack() {
     const hit = ATTACK[randomInt(3) - 1];
     const defence = ATTACK[randomInt(3) - 1];
@@ -105,4 +89,4 @@ function playerAttack() {
     return attack;
 }
 
-export {player1,player2,enemyAttack,playerAttack}
+export {Player,enemyAttack,playerAttack}

@@ -1,6 +1,6 @@
 import { generateLogs } from "./logs.js";
-import { player1, player2, playerAttack, enemyAttack } from "./objects.js";
-import { showResult } from "./supportFunction.js";
+import { Player, playerAttack, enemyAttack } from "./objects.js";
+import { randomInt, showResult } from "./supportFunction.js";
 
 const $root = document.querySelector('.arenas');
 
@@ -8,11 +8,30 @@ const $fightForm = document.querySelector('.control');
 const $chatLog = document.querySelector('.chat');
 
 class Game {
-    constructor(props){
-
+    getPlayers = async() => {
+        const body = fetch('https://reactmarathon-api.herokuapp.com/api/mk/players').then(res => res.json());
+        return body;
     }
 
     start = () =>{
+
+        const players = await this.getPlayers();
+
+        const p1 = players[randomInt(players.length)];
+        let player1 = new Player({
+            ...p1,
+            playerNumber:1,
+            rootSelector: 'arenas',
+        })
+
+        const p2 = players[randomInt(players.length)];
+        let player2 = new Player({
+            ...p2,
+            playerNumber:2,
+            rootSelector: 'arenas',
+        });
+
+
         $fightForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const enemy = enemyAttack();
