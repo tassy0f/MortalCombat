@@ -86,7 +86,17 @@ function playerAttack() {
 
         item.checked = false;
     }
+
+    const result = fetch('http://reactmarathon-api.herokuapp.com/api/mk/player/fight', {
+        method: 'POST',
+        body: JSON.stringify({
+            hit: attack.hit,
+            defence: attack.defence,
+        })
+    }).then(data => data.json());
+    //console.log(result);
+
     return attack;
 }
 
-export {Player,enemyAttack,playerAttack}
+export {Player,playerAttack,enemyAttack}
