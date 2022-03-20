@@ -1,5 +1,5 @@
 import { player1, player2 } from "./objects.js";
-import {$root, $fightForm} from "./main.js";
+import {$root} from "./game.js";
 import { generateLogs } from "./logs.js";
 
 const $randomButton = document.querySelector('.button');

@@ -1,4 +1,4 @@
-import{$chatLog} from "./main.js";
+import{$chatLog} from "./game.js";
 import {randomInt} from "./supportFunction.js";
 
 const logs = {
@@ -72,12 +72,11 @@ const generateLogs = (type, player1, player2, damage = 0) => {
             logMessage = `${confirmedTime} - ${text}`
             .replace('[playerWins]', player1.name)
             .replace('[playerLose]', player2.name);
+            break;
         case 'hit':
             logMessage = `${confirmedTime} - ${text} -${damage} [${player2.hp}/100]`
             .replace('[playerKick]', player1.name)
-            .replace('[playerDefence]', player2.name)
-            .replace('[playerWins]', player1.name)
-            .replace('[playerLose]', player2.name);
+            .replace('[playerDefence]', player2.name);
             break;
         case 'defence':
             logMessage = `${confirmedTime} - ${text}`
